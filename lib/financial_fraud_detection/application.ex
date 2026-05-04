@@ -10,7 +10,8 @@ defmodule FinancialFraudDetection.Application do
     children = [
       FinancialFraudDetectionWeb.Telemetry,
       FinancialFraudDetection.Repo,
-      {DNSCluster, query: Application.get_env(:financial_fraud_detection, :dns_cluster_query) || :ignore},
+      {DNSCluster,
+       query: Application.get_env(:financial_fraud_detection, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: FinancialFraudDetection.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: FinancialFraudDetection.Finch},
