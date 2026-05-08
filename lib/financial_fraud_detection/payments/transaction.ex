@@ -6,6 +6,7 @@ defmodule FinancialFraudDetection.Payments.Transaction do
     field :location, :string
     field :amount, :decimal
     field :transaction_time, :utc_datetime
+    field :customer_id, :integer
 
     timestamps(type: :utc_datetime)
   end
@@ -13,7 +14,7 @@ defmodule FinancialFraudDetection.Payments.Transaction do
   @doc false
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:amount, :transaction_time, :location])
+    |> cast(attrs, [:amount, :transaction_time, :location, :customer_id])
     |> validate_required([:amount, :transaction_time, :location])
   end
 end

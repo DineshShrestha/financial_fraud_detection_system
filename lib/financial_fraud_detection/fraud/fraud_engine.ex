@@ -1,10 +1,12 @@
 defmodule FinancialFraudDetection.Fraud.FraudEngine do
   alias FinancialFraudDetection.Fraud
   alias FinancialFraudDetection.Payments.Transaction
-
+  import Ecto.Query
+  alias FinancialFraudDetection.Repo
   def analyse_transaction(%Transaction{} = transaction) do
     rules = [
-      check_odd_hour(transaction)
+      check_odd_hour(transaction),
+      check_unusual_amount(transaction)
     ]
 
     triggered_rules =
@@ -52,5 +54,22 @@ defmodule FinancialFraudDetection.Fraud.FraudEngine do
       risk_level: "medium",
       status: "open"
     })
+  end
+
+  defp check_unusual_amount(transaction) do
+    average_amount = from(t in Transaction, where: t.customer_id == ^transaction.customer_id, 
+      select: avg(t.amount)
+      )
+      |> Repo.one()
+      
+    triggered= average_amount !=nil and Decimal.compare(
+      transaction.amount, Decimal.mult(average_amount, Decimal.new("3"))
+    ) == :gt
+
+    %{
+      rule: "UNUSUAL_AMOUNT",
+      triggered: triggered,
+      risk_level: "high"
+    }
   end
 end
