@@ -14,7 +14,7 @@ defmodule FinancialFraudDetection.Fraud.FraudAlert do
   @doc false
   def changeset(fraud_alert, attrs) do
     fraud_alert
-    |> cast(attrs, [:reason, :risk_level, :status])
+    |> cast(attrs, [:reason, :risk_level, :status, :transaction_id])
     |> validate_required([:reason, :risk_level, :status])
   end
 end
